@@ -3,17 +3,13 @@ import com.github.balintrudas.commentparser.CommentStore;
 import com.github.balintrudas.commentparser.Scanner;
 import com.github.balintrudas.commentparser.configuration.CommentMarkerConfiguration;
 import com.github.balintrudas.commentparser.configuration.Configuration;
-import com.github.balintrudas.commentparser.configuration.ExportConfiguration;
 import com.github.balintrudas.commentparser.configuration.GroupMarkerConfiguration;
-import com.github.balintrudas.commentparser.export.Export;
-import com.github.balintrudas.commentparser.export.ExportType;
 import com.github.balintrudas.commentparser.marker.MarkerElement;
 import com.github.balintrudas.commentparser.marker.CommentElement;
 import com.github.balintrudas.commentparser.util.CommentElementUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -289,8 +285,8 @@ public class CommentParserTest {
         GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration()
                 .toBuilder()
                 .addAnnotation(CustomAnnotation.class)
-                .defaultGroupNameKey("group")
-                .defaultGroupInheritKey("groupInherit")
+                .annotationGroupNameKey("group")
+                .annotationGroupInheritKey("groupInherit")
                 .build();
 
         Configuration configuration = new Configuration().
@@ -331,10 +327,10 @@ public class CommentParserTest {
         GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration()
                 .toBuilder()
                 .setAnnotations(CustomAnnotation.class)
-                .defaultGroupNameKey("group")
-                .defaultGroupInheritKey("groupInherit")
-                .setTags("customTag")
-                .addInheritTag("customInheritTag")
+                .annotationGroupNameKey("group")
+                .annotationGroupInheritKey("groupInherit")
+                .setCommentGroupTags("customTag")
+                .addCommentGroupInheritTag("customInheritTag")
                 .build();
 
         Configuration configuration = new Configuration().

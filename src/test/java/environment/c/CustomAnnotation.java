@@ -8,9 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface CustomAnnotation {
-
-    String[] group() default {};
-
+    String[] group() default {""};
     String[] groupInherit() default {};
-
 }

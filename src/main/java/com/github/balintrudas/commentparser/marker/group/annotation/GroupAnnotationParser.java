@@ -34,12 +34,12 @@ public class GroupAnnotationParser implements GroupMarkerElementParser<Annotatio
             if (annotationExprOpt.isPresent()) {
                 List<String> groupNames = this.getParameter(
                         annotationExprOpt.get(),
-                        this.configuration.getGroupMarkerConfiguration().getDefaultGroupNameKey(),
+                        this.configuration.getGroupMarkerConfiguration().getAnnotationGroupNameKey(),
                         Collections.singletonList(this.configuration.getGroupMarkerConfiguration().getDefaultGroupName())
                 );
                 List<String> groupInherits = this.getParameter(
                         annotationExprOpt.get(),
-                        this.configuration.getGroupMarkerConfiguration().getDefaultGroupInheritKey(),
+                        this.configuration.getGroupMarkerConfiguration().getAnnotationGroupInheritKey(),
                         Stream.of(this.configuration.getGroupMarkerConfiguration().getDefaultGroupInherit())
                                 .filter(Objects::nonNull).collect(Collectors.toList())
                 );
