@@ -1,3 +1,5 @@
+image::https://user-images.githubusercontent.com/22676978/73595587-d4360e00-451a-11ea-9608-26b6a64d9526.png[Comment Parser]
+
 = Comment Parser
 
 Comment Parser is a Java library that can be used to extract comments from a source code.
