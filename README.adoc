@@ -1,0 +1,426 @@
+= Comment Parser
+
+Comment Parser is a Java library that can be used to extract comments from a source code.
+It can also be used to grouping comments together and the results can be exported to various formats.
+Comment Parser plugin also available for IntelliJ.
+
+https://plugins.jetbrains.com/plugin/
+
+== Features
+
+The following features are available:
+
+* Comment parsing inside methods
+* Comment parsing outside methods
+* Comment parsing outside classes
+* Comment grouping with javadoc tags
+* Comment grouping with predefined annotations
+* Comment grouping with custom annotations
+* Inheritance between groups
+* Comment marking with predefined markers
+* Comment marking with custom markers
+* Comment exclusion with predefined markers
+* Comment exclusion with custom markers
+* Exporting to formats like Excel (.xlsx), Csv (.csv), Markdown (.md), AsciiDoc (.adoc)
+
+== Example
+
+[source,java]
+----
+@CmntGroup("Group name")
+public class TestClass {
+
+    public void testMethod(String a, String b) {
+        /// test comment 01
+        if (a.equals(b)) {
+            //@cmnt test comment 02
+        }
+    }
+
+}
+----
+[source,java]
+----
+Scanner scanner = new Scanner();
+CommentStore commentStore = scanner.parse();
+
+Export export = new Export(commentStore);
+export.export();
+----
+
+== Prerequisites
+
+* Java 1.8
+
+== Maven
+
+Released versions are available in The Central Repository. Just add this artifact to your project:
+
+[source, groovy]
+----
+dependencies {
+    compile 'com.github.balintrudas:commentparser:1.0.0'
+}
+----
+
+[source, xml]
+----
+<dependency>
+  <groupId>com.github.balintrudas</groupId>
+  <artifactId>commentparser</artifactId>
+  <version>1.0.0</version>
+</dependency>
+----
+
+== Usage
+
+=== Base Configuration
+
+[source, java]
+----
+Configuration configuration = new Configuration().
+                toBuilder()
+                .baseDirs(Arrays.asList(dirPath))
+                .sourceRoots(Arrays.asList(sourceRoot))
+                .commentMarkerConfiguration(commentMarkerConfiguration)
+                .groupMarkerConfiguration(groupMarkerConfiguration)
+                .build();
+----
+
+
+|===
+|Configuration |Description |Default value
+
+|baseDirs
+|Defines directories containing java files for parsing.
+|System.getProperty("user.dir"). The directory or path of the workspace for the current project
+
+|sourceRoots
+|Defines directories containing source code that should be used for solving symbols.
+|"src/main/java"
+
+|commentMarkerConfiguration
+|Configuration for comment markers.
+|Comment marker configuration with default values.
+
+|groupMarkerConfiguration
+|Configuration for group markers.
+|Group marker configuration with default values.
+|===
+
+
+=== Groups Markers
+
+Group markers can be use to order comments in collections.
+Groups support inheritance. Inheritance allows us to define a group that inherits all the comments from another group.
+Multiple inheritance also supported, so one group can have more than one parent.
+
+==== Group Configuration
+
+[source, java]
+----
+GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration()
+                .toBuilder()
+                .defaultGroupName("default")
+                .defaultGroupInherit("defaultGroup")
+                .addAnnotation(CustomAnnotation.class)
+                .defaultGroupNameKey("group")
+                .defaultGroupInheritKey("groupInherit")
+                .addTag("CustomTag")
+                .addInheritTag("CustomInheritTag")
+                .build();
+
+Configuration configuration = new Configuration().
+                toBuilder()
+                ...
+                .groupMarkerConfiguration(groupMarkerConfiguration)
+                .build();
+----
+
+|===
+|Configuration |Description |Default value
+
+|defaultGroupName
+|Nameless group markers (e.g.: annotations without value) use the default group name.
+|""
+
+|defaultGroupInherit
+|Group markers with inherit tag or property, but without value use the default group inherit.
+|null
+
+|annotations
+|Group annotations
+|CommentGroup, CmntGroup
+
+|defaultGroupNameKey
+|Name of the group name property in annotation group markers.
+|value
+
+|defaultGroupInheritKey
+|Name of the group inherit property in annotation group markers.
+|inherit
+
+|tags
+|Group tags in Javadoc comments
+|"Group", "group", "CommentGroup", "commentgroup", "CmntGroup", "cmntGroup", "cmntgroup"
+
+|inheritTags
+|Group inherit tags in Javadoc comments
+|"Inherit", "inherit", "InheritGroup", "inheritgroup", "inheritGroup"
+
+|===
+
+==== Group Markers Usage
+
+===== Method-level Group Markers
+
+[source, java]
+----
+public class Test {
+
+    //This comment won't be parsed
+    private String justTestProperty;
+
+    @CmntGroup(value = "group01", inherit = {"otherGroup"})
+    public void method01(){
+        /// This comment will be parsed -> group01
+    }
+
+    @CmntGroup(value = "group01")
+    public void method02() {
+        //@cmnt This comment will be parsed -> group01
+    }
+
+    /**
+    * Comment based group marker
+    * @cmntGroup group03
+    * @inherit otherGroup
+    */
+    public void method03() {
+        /// This comment will be parsed -> group03
+    }
+
+    @CmntGroup(value = "group04")
+    public void method04() {
+        /// This comment will be parsed -> group04
+    }
+
+}
+----
+===== Method-level Group Markers
+
+[source, java]
+----
+@CmntGroup(value = "group01")
+public class Test {
+
+    /// This comment will be parsed as well -> group01
+    private String justTestProperty;
+
+    public void method01(){
+        /// This comment will be parsed -> group01
+    }
+
+    public void method02() {
+        //@cmnt This comment will be parsed -> group01
+    }
+
+}
+----
+===== Group Inheritance
+
+[source, java]
+----
+public class TestA {
+
+    @CmntGroup(value = "group01")
+    public void method01(){
+        /// Comment from group01
+    }
+
+}
+
+public class TestB {
+
+    @CmntGroup(value = "group02", inherit = "group01")
+    public void method01(){
+        /// Comment from group02
+    }
+
+}
+----
+In this case the "group02" group will contain the following comments:
+
+* Comment from group01
+* Comment from group02
+
+=== Comment Markers
+
+Comment markers can be used to mark each comments you wish to be collected.
+You can also exclude comments from the result.
+
+==== Comment Configuration
+
+[source, java]
+----
+CommentMarkerConfiguration commentMarkerConfiguration = new CommentMarkerConfiguration()
+                .toBuilder()
+                .includeWithoutMarker(false)
+                .includeOnlyWithinGroup(true)
+                .includeOnlyWithinMethods(true)
+                .addContains("@custom")
+                .addTag("custom")
+                .addStartWith("custom")
+                .addExcludeContains("@excludeCustom")
+                .addExcludeTag("excludeCustom")
+                .addExcludeStartWith("excludeCustom")
+                .regex("customRegex")
+                .enableContains(true)
+                .enableStartWith(true)
+                .removeMarkers(true)
+                .build();
+
+Configuration configuration = new Configuration().
+                toBuilder()
+                ...
+                .commentMarkerConfiguration(commentMarkerConfiguration)
+                .build();
+----
+
+|===
+|Configuration |Description |Default value
+
+|includeWithoutMarker
+|If true search comments without marker.
+|false
+
+|includeOnlyWithinGroup
+|If false, search comments outside groups.
+|true
+
+|includeOnlyWithinMethods
+|If false search comment outside methods.
+|true
+
+|contains
+|The parser collects the given comment if it contains the given value.
+|"@cmnt", "@Cmnt", "@comment", "@Comment"
+
+|tags
+|The parser collects the given javadoc comment if it has the given tag.
+|"cmnt", "Cmnt", "comment", "Comment"
+
+|startWith
+|The parser collects the given comment if it starts with the given value.
+|"/"
+
+|regex
+|Regex based search pattern.
+|null
+
+|excludeContains
+|The parser exclude the given comment if it contains the given value.
+|[]
+
+|excludeTags
+|The parser exclude the given javadoc comment if it has the given tag.
+|[]
+
+|excludeStartWith
+|The parser exclude the given comment if it starts with the given value.
+|[]
+
+|excludeRegex
+|Regex based exclusion.
+|null
+
+|enableContains
+|Enable/disable contain search patterns.
+|true
+
+|enableTags
+|Enable/disable Javadoc tags.
+|true
+
+|enableStartWith
+|Enable/disable contain start with patterns.
+|true
+
+|removeMarkers
+|Remove marker from the collected comment.
+|true
+|===
+==== Comment Markers Usage
+[source, java]
+----
+public class TestA {
+
+    @CmntGroup(value = "group01")
+    public void method01(){
+
+        /// Comment from group01
+
+        //@cmnt Comment from group01
+
+        /**
+        * Comment from group01
+        * @cmnt
+        */
+
+    }
+
+}
+----
+
+=== Export
+
+Supported file types: xlsx, csv, md, adoc
+
+==== Export Example
+[source, java]
+----
+ExportConfiguration exportConfiguration = new ExportConfiguration().
+                toBuilder()
+                .exportType(ExportType.ASCIIDOC)
+                .fileName("fileName")
+                .saveDirectory("/../../directory")
+                .enableGroups(true)
+                .enableDescription(true)
+                .enablePath(true)
+                .build();
+
+ Export export = new Export(commentStore, exportConfiguration);
+ export.export();
+----
+|===
+|Configuration |Description |Default value
+
+|exportType
+|Available file types: EXCEL, CSV, MARKDOWN, ASCIIDOC
+|ASCIIDOC
+
+|fileName
+|
+|comment_export_yyyyMMddHHmm
+
+|saveDirectory
+|
+|System.getProperty("user.home"). The directory or path of the workspace for the current project
+
+|enableGroups
+|Enable/disable group paragraph or column in the document
+|true
+
+|enableDescription
+|Enable/disable description paragraph or column in the document
+|true
+
+|enablePath
+|Enable/disable path paragraph or column in the document
+|true
+
+|===
+
+=== License
+
+MIT: https://opensource.org/licenses/MIT
