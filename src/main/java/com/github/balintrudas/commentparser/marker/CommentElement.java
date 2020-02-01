@@ -44,7 +44,7 @@ public class CommentElement extends MarkerElement {
         CommentElement that = (CommentElement) o;
         return Objects.equals(value, that.value) &&
                 Objects.equals(marker, that.marker) &&
-                Objects.equals(getPath(), that.getParent());
+                Objects.equals(getPath(), that.getPath());
     }
 
     @Override
