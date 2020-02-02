@@ -8,6 +8,9 @@ Comment Parser plugin also available for IntelliJ.
 
 https://plugins.jetbrains.com/plugin/
 
+image::https://user-images.githubusercontent.com/22676978/73601514-564a2500-4563-11ea-8c7a-fbe3dcf83bd4.png[Comment Parser]
+
+
 == Features
 
 The following features are available:
