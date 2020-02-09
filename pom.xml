@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.balintrudas</groupId>
   <artifactId>commentparser</artifactId>
-  <version>1.0.0-alpha-16</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
   <name>Comment Parser</name>
   <description>Comment Parser is a Java library that can be used to extract comments from a source code.</description>
@@ -27,6 +27,8 @@
     <developer>
       <name>Balint Rudas</name>
       <email>balintrudas@gmail.com</email>
+      <organization>com.github.balintrudas</organization>
+      <organizationUrl>https://github.com/balintrudas</organizationUrl>
     </developer>
   </developers>
 
@@ -84,10 +86,23 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>2.2.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
             </goals>
@@ -101,13 +116,25 @@
         <version>1.6</version>
         <executions>
           <execution>
-            <id>ossrh</id>
+            <id>sign-artifacts</id>
             <phase>verify</phase>
             <goals>
               <goal>sign</goal>
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>false</autoReleaseAfterClose>
+        </configuration>
       </plugin>
 
     </plugins>
