@@ -1,55 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <groupId>com.github.balintrudas</groupId>
-    <artifactId>commentparser</artifactId>
-    <version>1.0.0-alpha-14</version>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.balintrudas</groupId>
+  <artifactId>commentparser</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <name>Comment Parser</name>
+  <description>Comment Parser is a Java library that can be used to extract comments from a source code.</description>
+  <url>https://github.com/balintrudas/commentparser</url>
+  <inceptionYear>2020</inceptionYear>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.github.javaparser</groupId>
-            <artifactId>javaparser-symbol-solver-core</artifactId>
-            <version>3.15.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
-        </dependency>
-        <dependency>
-            <groupId>com.coreoz</groupId>
-            <artifactId>windmill</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.steppschuh.markdowngenerator</groupId>
-            <artifactId>markdowngenerator</artifactId>
-            <version>1.3.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-        </dependency>
-    </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>The MIT License (MIT)</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Balint Rudas</name>
+      <email>balintrudas@gmail.com</email>
+      <organization>com.github.balintrudas</organization>
+      <organizationUrl>https://github.com/balintrudas</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/balintrudas/commentparser.git</connection>
+    <developerConnection>scm:git:ssh://github.com:balintrudas/commentparser.git</developerConnection>
+    <url>https://github.com/balintrudas/commentparser</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-symbol-solver-core</artifactId>
+      <version>3.15.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.11</version>
+    </dependency>
+    <dependency>
+      <groupId>com.coreoz</groupId>
+      <artifactId>windmill</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.10</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.steppschuh.markdowngenerator</groupId>
+      <artifactId>markdowngenerator</artifactId>
+      <version>1.3.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>false</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
 </project>

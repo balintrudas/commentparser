@@ -1,3 +1,5 @@
+image::https://user-images.githubusercontent.com/22676978/73595587-d4360e00-451a-11ea-9608-26b6a64d9526.png[Comment Parser]
+
 = Comment Parser
 
 Comment Parser is a Java library that can be used to extract comments from a source code.
@@ -5,6 +7,9 @@ It can also be used to grouping comments together and the results can be exporte
 Comment Parser plugin also available for IntelliJ.
 
 https://plugins.jetbrains.com/plugin/
+
+image::https://user-images.githubusercontent.com/22676978/73601514-564a2500-4563-11ea-8c7a-fbe3dcf83bd4.png[Comment Parser]
+
 
 == Features
 
@@ -124,10 +129,10 @@ GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration
                 .defaultGroupName("default")
                 .defaultGroupInherit("defaultGroup")
                 .addAnnotation(CustomAnnotation.class)
-                .defaultGroupNameKey("group")
-                .defaultGroupInheritKey("groupInherit")
-                .addTag("CustomTag")
-                .addInheritTag("CustomInheritTag")
+                .annotationGroupNameKey("group")
+                .annotationGroupInheritKey("groupInherit")
+                .addCommentGroupTag("CustomTag")
+                .addCommentGroupInheritTag("CustomInheritTag")
                 .build();
 
 Configuration configuration = new Configuration().
@@ -152,23 +157,60 @@ Configuration configuration = new Configuration().
 |Group annotations
 |CommentGroup, CmntGroup
 
-|defaultGroupNameKey
+|annotationGroupNameKey
 |Name of the group name property in annotation group markers.
 |value
 
-|defaultGroupInheritKey
+|annotationGroupInheritKey
 |Name of the group inherit property in annotation group markers.
 |inherit
 
-|tags
+|commentGroupTags
 |Group tags in Javadoc comments
 |"Group", "group", "CommentGroup", "commentgroup", "CmntGroup", "cmntGroup", "cmntgroup"
 
-|inheritTags
+|commentGroupInheritTags
 |Group inherit tags in Javadoc comments
 |"Inherit", "inherit", "InheritGroup", "inheritgroup", "inheritGroup"
 
 |===
+
+==== Custom Group Marker Annotation
+
+For create a custom marker annotation, you have to copy the structure of the @CmntGroup annotation.
+[source, java]
+----
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface CmntGroup {
+    String[] value() default {""};
+    String[] inherit() default {};
+}
+----
+If you want to rename the value and inherit method's name, you have to configure the new names in the GroupMarkerConfiguration.
+(annotationGroupNameKey, annotationGroupInheritKey)
+
+===== Custom Group Marker Annotation Example
+[source, java]
+----
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface CustomAnnotation {
+    String[] group() default {""};
+    String[] groupInherit() default {};
+}
+----
+
+[source, java]
+----
+GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration()
+                .toBuilder()
+                .addAnnotation(CustomAnnotation.class)
+                .annotationGroupNameKey("group")
+                .annotationGroupInheritKey("groupInherit")
+                .build();
+----
+
 
 ==== Group Markers Usage
 

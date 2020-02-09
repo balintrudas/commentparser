@@ -34,15 +34,20 @@ public class GroupAnnotationParser implements GroupMarkerElementParser<Annotatio
             if (annotationExprOpt.isPresent()) {
                 List<String> groupNames = this.getParameter(
                         annotationExprOpt.get(),
-                        this.configuration.getGroupMarkerConfiguration().getDefaultGroupNameKey(),
+                        this.configuration.getGroupMarkerConfiguration().getAnnotationGroupNameKey(),
                         Collections.singletonList(this.configuration.getGroupMarkerConfiguration().getDefaultGroupName())
                 );
-                List<String> groupInherits = this.getParameter(
-                        annotationExprOpt.get(),
-                        this.configuration.getGroupMarkerConfiguration().getDefaultGroupInheritKey(),
-                        Stream.of(this.configuration.getGroupMarkerConfiguration().getDefaultGroupInherit())
-                                .filter(Objects::nonNull).collect(Collectors.toList())
-                );
+
+                List<String> groupInherits = Stream.of(this.configuration.getGroupMarkerConfiguration().getDefaultGroupInherit())
+                        .filter(Objects::nonNull).collect(Collectors.toList());
+                if (annotationExprOpt.get() instanceof NormalAnnotationExpr) {
+                    groupInherits = this.getParameter(
+                            (NormalAnnotationExpr) annotationExprOpt.get(),
+                            this.configuration.getGroupMarkerConfiguration().getAnnotationGroupInheritKey(),
+                            groupInherits
+                    );
+                }
+
                 AnnotationElement annotationElement = new AnnotationElement(aClass, groupNames, groupInherits);
                 annotationElement.setNodeDeclaration(node);
                 annotationElement.setDescription(this.getDescription(annotationExprOpt));
@@ -58,16 +63,20 @@ public class GroupAnnotationParser implements GroupMarkerElementParser<Annotatio
             if (annotationExpr instanceof SingleMemberAnnotationExpr) {
                 return this.parseExpression(annotationExpr.asSingleMemberAnnotationExpr().getMemberValue());
             } else if (annotationExpr instanceof NormalAnnotationExpr) {
-                List<String> valuesOpt = annotationExpr.asNormalAnnotationExpr().getPairs().stream()
-                        .filter(memberValuePair -> memberValuePair.getName().asString().equals(parameterName)
-                        ).flatMap(memberValuePair -> this.parseExpression(memberValuePair.getValue()).stream())
-                        .collect(Collectors.toList());
-                return !valuesOpt.isEmpty() ? valuesOpt : defaultValue;
+                return this.getParameter((NormalAnnotationExpr) annotationExpr, parameterName, defaultValue);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return defaultValue;
+    }
+
+    private List<String> getParameter(NormalAnnotationExpr annotationExpr, String parameterName, List<String> defaultValue) {
+        List<String> valuesOpt = annotationExpr.asNormalAnnotationExpr().getPairs().stream()
+                .filter(memberValuePair -> memberValuePair.getName().asString().equals(parameterName)
+                ).flatMap(memberValuePair -> this.parseExpression(memberValuePair.getValue()).stream())
+                .collect(Collectors.toList());
+        return !valuesOpt.isEmpty() ? valuesOpt : defaultValue;
     }
 
     private List<String> parseExpression(Expression expression) {
@@ -91,14 +100,14 @@ public class GroupAnnotationParser implements GroupMarkerElementParser<Annotatio
         return Collections.singletonList(this.configuration.getGroupMarkerConfiguration().getDefaultGroupName());
     }
 
-    private String getDescription(Optional<AnnotationExpr> annotationExprOpt){
-        if(annotationExprOpt.get().getParentNode().isPresent() && annotationExprOpt.get().getParentNode().get().getComment().isPresent()){
-            if(annotationExprOpt.get().getParentNode().get().getComment().get() instanceof JavadocComment){
+    private String getDescription(Optional<AnnotationExpr> annotationExprOpt) {
+        if (annotationExprOpt.get().getParentNode().isPresent() && annotationExprOpt.get().getParentNode().get().getComment().isPresent()) {
+            if (annotationExprOpt.get().getParentNode().get().getComment().get() instanceof JavadocComment) {
                 Javadoc javaDoc = ((JavadocComment) annotationExprOpt.get().getParentNode().get().getComment().get()).parse();
-                if(javaDoc != null){
+                if (javaDoc != null) {
                     return javaDoc.getDescription().toText();
                 }
-            }else{
+            } else {
                 return annotationExprOpt.get().getParentNode().get().getComment().get().getContent();
             }
         }

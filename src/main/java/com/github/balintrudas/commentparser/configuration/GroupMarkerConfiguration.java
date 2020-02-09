@@ -15,48 +15,49 @@ import java.util.stream.Collectors;
 public class GroupMarkerConfiguration {
 
     @NonNull
+    private Set<String> annotations = new HashSet<>(Arrays.asList("CommentGroup", "CmntGroup"));
+
+    @NonNull
     private String defaultGroupName = "";
     private String defaultGroupInherit = null;
     @NonNull
-    private String defaultGroupNameKey = "value";
+    private String annotationGroupNameKey = "value";
     @NonNull
-    private String defaultGroupInheritKey = "inherit";
+    private String annotationGroupInheritKey = "inherit";
 
     @NonNull
-    private Set<String> annotations = new HashSet<>(Arrays.asList("CommentGroup", "CmntGroup"));
+    private Set<String> commentGroupTags = new HashSet<>(Arrays.asList("Group", "group", "CommentGroup", "commentgroup", "CmntGroup", "cmntGroup", "cmntgroup"));
     @NonNull
-    private Set<String> tags = new HashSet<>(Arrays.asList("Group", "group", "CommentGroup", "commentgroup", "CmntGroup", "cmntGroup", "cmntgroup"));
-    @NonNull
-    private Set<String> inheritTags = new HashSet<>(Arrays.asList("Inherit", "inherit", "InheritGroup", "inheritgroup", "inheritGroup"));
+    private Set<String> commentGroupInheritTags = new HashSet<>(Arrays.asList("Inherit", "inherit", "InheritGroup", "inheritgroup", "inheritGroup"));
 
     public static class GroupMarkerConfigurationBuilder {
-        public GroupMarkerConfigurationBuilder setTags(String... tags) {
-            this.tags = new HashSet<>(Arrays.asList(tags));
+        public GroupMarkerConfigurationBuilder setCommentGroupTags(String... tags) {
+            this.commentGroupTags = new HashSet<>(Arrays.asList(tags));
             return this;
         }
 
-        public GroupMarkerConfigurationBuilder addTag(String tag) {
-            this.tags.add(tag);
+        public GroupMarkerConfigurationBuilder addCommentGroupTag(String tag) {
+            this.commentGroupTags.add(tag);
             return this;
         }
 
-        public GroupMarkerConfigurationBuilder addTag(String... tags) {
-            this.tags.addAll(Arrays.asList(tags));
+        public GroupMarkerConfigurationBuilder addCommentGroupTag(String... tags) {
+            this.commentGroupTags.addAll(Arrays.asList(tags));
             return this;
         }
 
-        public GroupMarkerConfigurationBuilder setInheritTags(String... tags) {
-            this.inheritTags = new HashSet<>(Arrays.asList(tags));
+        public GroupMarkerConfigurationBuilder setCommentGroupInheritTags(String... tags) {
+            this.commentGroupInheritTags = new HashSet<>(Arrays.asList(tags));
             return this;
         }
 
-        public GroupMarkerConfigurationBuilder addInheritTag(String tag) {
-            this.inheritTags.add(tag);
+        public GroupMarkerConfigurationBuilder addCommentGroupInheritTag(String tag) {
+            this.commentGroupInheritTags.add(tag);
             return this;
         }
 
-        public GroupMarkerConfigurationBuilder addInheritTag(String... tags) {
-            this.inheritTags.addAll(Arrays.asList(tags));
+        public GroupMarkerConfigurationBuilder addCommentGroupInheritTag(String... tags) {
+            this.commentGroupInheritTags.addAll(Arrays.asList(tags));
             return this;
         }
 

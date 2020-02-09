@@ -1,4 +1,4 @@
-package environment.c;
+package environment.e;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
-public @interface CustomAnnotation {
-    String[] group() default {""};
-    String[] groupInherit() default {};
+public @interface SimpleCustomAnnotation {
+    String[] value() default {""};
+    String[] inherit() default {};
 }

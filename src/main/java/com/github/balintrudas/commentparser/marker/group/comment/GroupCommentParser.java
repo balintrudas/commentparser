@@ -35,8 +35,8 @@ public class GroupCommentParser implements GroupMarkerElementParser<CommentEleme
             if (comment.get() instanceof JavadocComment) {
                 Javadoc javaDoc = ((JavadocComment) comment.get()).parse();
 
-                List<String> tagValues = CommentElementUtil.getTagValues(this.configuration.getGroupMarkerConfiguration().getTags(), javaDoc.getBlockTags());
-                List<String> inheritTagValues = CommentElementUtil.getTagValues(this.configuration.getGroupMarkerConfiguration().getInheritTags(), javaDoc.getBlockTags());
+                List<String> tagValues = CommentElementUtil.getTagValues(this.configuration.getGroupMarkerConfiguration().getCommentGroupTags(), javaDoc.getBlockTags());
+                List<String> inheritTagValues = CommentElementUtil.getTagValues(this.configuration.getGroupMarkerConfiguration().getCommentGroupInheritTags(), javaDoc.getBlockTags());
 
                 if (!tagValues.isEmpty()) {
                     CommentElement commentElement = new CommentElement(javaDoc.getDescription().toText(),

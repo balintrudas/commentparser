@@ -3,17 +3,14 @@ import com.github.balintrudas.commentparser.CommentStore;
 import com.github.balintrudas.commentparser.Scanner;
 import com.github.balintrudas.commentparser.configuration.CommentMarkerConfiguration;
 import com.github.balintrudas.commentparser.configuration.Configuration;
-import com.github.balintrudas.commentparser.configuration.ExportConfiguration;
 import com.github.balintrudas.commentparser.configuration.GroupMarkerConfiguration;
-import com.github.balintrudas.commentparser.export.Export;
-import com.github.balintrudas.commentparser.export.ExportType;
 import com.github.balintrudas.commentparser.marker.MarkerElement;
 import com.github.balintrudas.commentparser.marker.CommentElement;
 import com.github.balintrudas.commentparser.util.CommentElementUtil;
+import environment.e.SimpleCustomAnnotation;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -67,8 +64,13 @@ public class CommentParserTest {
         Assert.assertTrue(CommentParserTestUtil.hasComment(group, "dMethodGroup02_01"));
         Assert.assertTrue(CommentParserTestUtil.hasComment(group, "dMethodGroup02_01"));
         Assert.assertTrue(CommentParserTestUtil.hasComment(group, "CCustomAnnotationGroup_01_01"));
+        Assert.assertTrue(CommentParserTestUtil.hasComment(group, "E2SimpleCustomAnnotation"));
+        Assert.assertTrue(CommentParserTestUtil.hasComment(group, "e2Method_01_01"));
+        Assert.assertTrue(CommentParserTestUtil.hasComment(group, "ESimpleCustomAnnotation"));
+        Assert.assertTrue(CommentParserTestUtil.hasComment(group, "eMethod_01_01"));
 
-        Assert.assertEquals(11, group.size());
+
+        Assert.assertEquals(15, group.size());
 
         LinkedHashSet<CommentElement> bAMethodGroup = commentStore.getComments().get("BAMethodGroup");
         Assert.assertTrue(CommentParserTestUtil.hasComment(bAMethodGroup, "baMethod_01_01"));
@@ -288,9 +290,9 @@ public class CommentParserTest {
 
         GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration()
                 .toBuilder()
-                .addAnnotation(CustomAnnotation.class)
-                .defaultGroupNameKey("group")
-                .defaultGroupInheritKey("groupInherit")
+                .setAnnotations(CustomAnnotation.class, SimpleCustomAnnotation.class)
+                .annotationGroupNameKey("group")
+                .annotationGroupInheritKey("groupInherit")
                 .build();
 
         Configuration configuration = new Configuration().
@@ -319,6 +321,52 @@ public class CommentParserTest {
     }
 
     @Test
+    public void shouldReturnWithSimpleCustomAnnotation() throws IOException {
+        //GIVEN
+        CommentMarkerConfiguration commentMarkerConfiguration = new CommentMarkerConfiguration()
+                .toBuilder()
+                .includeWithoutMarker(false)
+                .includeOnlyWithinGroup(true)
+                .includeOnlyWithinMethods(true)
+                .build();
+
+        GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration()
+                .toBuilder()
+                .setAnnotations(SimpleCustomAnnotation.class)
+                .build();
+
+        Configuration configuration = new Configuration().
+                toBuilder()
+                .baseDirs(Arrays.asList(CommentParserTestUtil.getEnvironmentPath()))
+                .commentMarkerConfiguration(commentMarkerConfiguration)
+                .groupMarkerConfiguration(groupMarkerConfiguration)
+                .build();
+
+        //WHEN
+        Scanner scanner = new Scanner(configuration);
+
+        //THEN
+        CommentStore commentStore = scanner.parse();
+
+        Assert.assertNotNull(commentStore);
+        Assert.assertNotNull(commentStore.getComments());
+        Assert.assertTrue(!commentStore.getComments().isEmpty());
+
+        Assert.assertTrue(commentStore.getComments().containsKey("E2SimpleCustomAnnotation"));
+
+        LinkedHashSet<CommentElement> e2SimpleCustomAnnotation = commentStore.getComments().get("E2SimpleCustomAnnotation");
+        Assert.assertTrue(CommentParserTestUtil.hasComment(e2SimpleCustomAnnotation, "e2Method_01_01"));
+        Assert.assertEquals(1, e2SimpleCustomAnnotation.size());
+
+        Assert.assertTrue(commentStore.getComments().containsKey("E2SimpleCustomAnnotation"));
+
+        LinkedHashSet<CommentElement> eSimpleCustomAnnotation = commentStore.getComments().get("ESimpleCustomAnnotation");
+        Assert.assertTrue(CommentParserTestUtil.hasComment(eSimpleCustomAnnotation, "eMethod_01_01"));
+        Assert.assertEquals(1, eSimpleCustomAnnotation.size());
+
+    }
+
+    @Test
     public void shouldReturnWithCustomTagWithDescriptions() throws IOException {
         //GIVEN
         CommentMarkerConfiguration commentMarkerConfiguration = new CommentMarkerConfiguration()
@@ -331,10 +379,10 @@ public class CommentParserTest {
         GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration()
                 .toBuilder()
                 .setAnnotations(CustomAnnotation.class)
-                .defaultGroupNameKey("group")
-                .defaultGroupInheritKey("groupInherit")
-                .setTags("customTag")
-                .addInheritTag("customInheritTag")
+                .annotationGroupNameKey("group")
+                .annotationGroupInheritKey("groupInherit")
+                .setCommentGroupTags("customTag")
+                .addCommentGroupInheritTag("customInheritTag")
                 .build();
 
         Configuration configuration = new Configuration().
