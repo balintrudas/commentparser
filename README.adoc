@@ -1,6 +1,6 @@
 image::https://user-images.githubusercontent.com/22676978/73595587-d4360e00-451a-11ea-9608-26b6a64d9526.png[Comment Parser]
 
-image::https://maven-badges.herokuapp.com/maven-central/com.github.balintrudas/commentparser/badge.svg[caption="Maven Central: ",link=https://github.com/balintrudas/commentparser]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.balintrudas/commentparser/badge.svg[caption="Maven Central: ",link=https://search.maven.org/artifact/com.github.balintrudas/commentparser/1.0.0/jar]
 
 = Comment Parser
 
