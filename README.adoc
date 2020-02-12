@@ -66,7 +66,7 @@ Released versions are available in The Central Repository. Just add this artifac
 [source, groovy]
 ----
 dependencies {
-    compile 'com.github.balintrudas:commentparser:1.0.0'
+    compile 'com.github.balintrudas:commentparser:1.1.0'
 }
 ----
 
@@ -75,7 +75,7 @@ dependencies {
 <dependency>
   <groupId>com.github.balintrudas</groupId>
   <artifactId>commentparser</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ----
 
