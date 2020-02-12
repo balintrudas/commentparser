@@ -1,6 +1,7 @@
+import com.github.balintrudas.commentparser.scanner.adapter.ParseProcessAdapter;
 import environment.c.CustomAnnotation;
-import com.github.balintrudas.commentparser.CommentStore;
-import com.github.balintrudas.commentparser.Scanner;
+import com.github.balintrudas.commentparser.scanner.CommentStore;
+import com.github.balintrudas.commentparser.scanner.Scanner;
 import com.github.balintrudas.commentparser.configuration.CommentMarkerConfiguration;
 import com.github.balintrudas.commentparser.configuration.Configuration;
 import com.github.balintrudas.commentparser.configuration.GroupMarkerConfiguration;
@@ -17,6 +18,43 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 
 public class CommentParserTest {
+
+    @Test
+    public void shouldReturnAllCommentCallback() throws IOException, InterruptedException {
+        //GIVEN
+        CommentMarkerConfiguration commentMarkerConfiguration = new CommentMarkerConfiguration()
+                .toBuilder()
+                .includeWithoutMarker(true)
+                .includeOnlyWithinGroup(false)
+                .includeOnlyWithinMethods(false)
+                .build();
+
+        GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration();
+
+        Configuration configuration = new Configuration().
+                toBuilder()
+                .baseDirs(Arrays.asList(CommentParserTestUtil.getEnvironmentPath()))
+                .commentMarkerConfiguration(commentMarkerConfiguration)
+                .groupMarkerConfiguration(groupMarkerConfiguration)
+                .build();
+
+        //WHEN
+        Scanner scanner = new Scanner(configuration);
+
+        //THEN
+        scanner.parse(new ParseProcessAdapter() {
+            @Override
+            public void onSuccess(CommentStore commentStore) {
+                validateReturnAllCommentStore(commentStore);
+            }
+
+            @Override
+            public boolean isCanceled() {
+                return false;
+            }
+        });
+
+    }
 
     @Test
     public void shouldReturnAllComment() throws IOException {
@@ -42,7 +80,10 @@ public class CommentParserTest {
 
         //THEN
         CommentStore commentStore = scanner.parse();
+        this.validateReturnAllCommentStore(commentStore);
+    }
 
+    private void validateReturnAllCommentStore(CommentStore commentStore) {
         Assert.assertNotNull(commentStore);
         Assert.assertNotNull(commentStore.getComments());
         Assert.assertTrue(!commentStore.getComments().isEmpty());
@@ -98,6 +139,42 @@ public class CommentParserTest {
         Assert.assertTrue(CommentParserTestUtil.hasComment(bMethodGroup, "aMethod_01_03"));
         Assert.assertTrue(CommentParserTestUtil.hasComment(bMethodGroup, "aMethod_02_01"));
         Assert.assertEquals(7, bMethodGroup.size());
+    }
+
+    @Test
+    public void shouldReturnOnlyWithinGroupCommentCallback() throws InterruptedException {
+        //GIVEN
+        CommentMarkerConfiguration commentMarkerConfiguration = new CommentMarkerConfiguration()
+                .toBuilder()
+                .includeWithoutMarker(true)
+                .includeOnlyWithinGroup(true)
+                .includeOnlyWithinMethods(false)
+                .build();
+
+        GroupMarkerConfiguration groupMarkerConfiguration = new GroupMarkerConfiguration();
+
+        Configuration configuration = new Configuration().
+                toBuilder()
+                .baseDirs(Arrays.asList(CommentParserTestUtil.getEnvironmentPath()))
+                .commentMarkerConfiguration(commentMarkerConfiguration)
+                .groupMarkerConfiguration(groupMarkerConfiguration)
+                .build();
+
+        //WHEN
+        Scanner scanner = new Scanner(configuration);
+
+        //THEN
+        scanner.parse(new ParseProcessAdapter() {
+            @Override
+            public void onSuccess(CommentStore commentStore) {
+                validateReturnOnlyWithinGroupCommentStore(commentStore);
+            }
+
+            @Override
+            public boolean isCanceled() {
+                return false;
+            }
+        });
 
     }
 
@@ -125,7 +202,10 @@ public class CommentParserTest {
 
         //THEN
         CommentStore commentStore = scanner.parse();
+        this.validateReturnOnlyWithinGroupCommentStore(commentStore);
+    }
 
+    public void validateReturnOnlyWithinGroupCommentStore(CommentStore commentStore) {
         Assert.assertNotNull(commentStore);
         Assert.assertNotNull(commentStore.getComments());
         Assert.assertTrue(!commentStore.getComments().isEmpty());
@@ -160,7 +240,6 @@ public class CommentParserTest {
         Assert.assertTrue(CommentParserTestUtil.hasComment(bMethodGroup, "aMethod_01_03"));
         Assert.assertTrue(CommentParserTestUtil.hasComment(bMethodGroup, "aMethod_02_01"));
         Assert.assertEquals(7, bMethodGroup.size());
-
     }
 
     @Test

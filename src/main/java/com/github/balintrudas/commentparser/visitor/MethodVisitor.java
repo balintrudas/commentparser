@@ -1,11 +1,11 @@
 package com.github.balintrudas.commentparser.visitor;
 
+import com.github.balintrudas.commentparser.scanner.ScannerContext;
 import com.github.balintrudas.commentparser.configuration.Configuration;
 import com.github.balintrudas.commentparser.util.NodeUtil;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.balintrudas.commentparser.Scanner;
 import com.github.balintrudas.commentparser.marker.CommentMarkerParser;
 import com.github.balintrudas.commentparser.marker.group.GroupMarkerParser;
 import com.github.balintrudas.commentparser.marker.Marker;
@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MethodVisitor extends VoidVisitorAdapter<Scanner> {
+public class MethodVisitor extends VoidVisitorAdapter<ScannerContext> {
 
     @Override
-    public void visit(MethodDeclaration md, Scanner arg) {
+    public void visit(MethodDeclaration md, ScannerContext arg) {
 
         if (NodeUtil.isInBoundaries(arg.getConfiguration(), md)) {
 
@@ -48,7 +48,7 @@ public class MethodVisitor extends VoidVisitorAdapter<Scanner> {
      * @param arg
      * @return Method comments
      */
-    private List<CommentElement> parseMethodComments(List<Comment> comments, MethodDeclaration md, Marker parent, Configuration configuration, Scanner arg) {
+    private List<CommentElement> parseMethodComments(List<Comment> comments, MethodDeclaration md, Marker parent, Configuration configuration, ScannerContext arg) {
         if (comments == null || comments.isEmpty()) {
             return null;
         }

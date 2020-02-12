@@ -1,5 +1,6 @@
 package com.github.balintrudas.commentparser.visitor;
 
+import com.github.balintrudas.commentparser.scanner.ScannerContext;
 import com.github.balintrudas.commentparser.marker.group.GroupMarkerParser;
 import com.github.balintrudas.commentparser.marker.Marker;
 import com.github.balintrudas.commentparser.util.NodeUtil;
@@ -12,7 +13,6 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.balintrudas.commentparser.Scanner;
 import com.github.balintrudas.commentparser.marker.CommentMarkerParser;
 import com.github.balintrudas.commentparser.marker.CommentElement;
 
@@ -20,21 +20,21 @@ import com.github.balintrudas.commentparser.marker.CommentElement;
  * Only parse the non method comments
  * Get comments if configuration "getCommentsOnlyWithinMethod" is false
  */
-public class CommentVisitor extends VoidVisitorAdapter<Scanner> {
+public class CommentVisitor extends VoidVisitorAdapter<ScannerContext> {
 
     @Override
-    public void visit(LineComment lineComment, Scanner arg) {
+    public void visit(LineComment lineComment, ScannerContext arg) {
         this.processNonMethodComments(lineComment, arg);
     }
 
     @Override
-    public void visit(BlockComment blockComment, Scanner arg) {
+    public void visit(BlockComment blockComment, ScannerContext arg) {
         this.processNonMethodComments(blockComment, arg);
 
     }
 
     @Override
-    public void visit(JavadocComment javadocComment, Scanner arg) {
+    public void visit(JavadocComment javadocComment, ScannerContext arg) {
         this.processNonMethodComments(javadocComment, arg);
 
     }
@@ -44,7 +44,7 @@ public class CommentVisitor extends VoidVisitorAdapter<Scanner> {
      * @param comment
      * @param arg
      */
-    private void processNonMethodComments(Comment comment, Scanner arg) {
+    private void processNonMethodComments(Comment comment, ScannerContext arg) {
         if (NodeUtil.isInBoundaries(arg.getConfiguration(), comment) && !this.isMethodComment(comment) && !arg.getConfiguration().getCommentMarkerConfiguration().getIncludeOnlyWithinMethods()) {
             GroupMarkerParser groupMarkerParser = new GroupMarkerParser(arg.getConfiguration());
             Marker marker = groupMarkerParser.parse(comment);
