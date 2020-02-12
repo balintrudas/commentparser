@@ -465,6 +465,45 @@ ExportConfiguration exportConfiguration = new ExportConfiguration().
 
 |===
 
+=== Parse Process Adapter
+
+An adapter interface for receiving parsing events.
+Parsing events let you track when the parsing process finished, failed, or canceled. With "isCanceled" and "onProgress" callbacks, we can cancel or get the progress status of a process.
+
+==== Parse Process Adapter Example
+[source, java]
+----
+Scanner scanner = new Scanner();
+scanner.parse(new ParseProcessAdapter() {
+
+    @Override
+    public void onSuccess(CommentStore commentStore) {
+        // process done
+    }
+
+    @Override
+    public void onError(Exception exception) {
+        // process failed
+    }
+
+    @Override
+    public void onProgress(TaskProgress progress) {
+        // progress changed
+    }
+
+    @Override
+    public void onCancel() {
+        // process canceled
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return false; // cancel the process if true
+    }
+
+});
+----
+
 === License
 
 MIT: https://opensource.org/licenses/MIT

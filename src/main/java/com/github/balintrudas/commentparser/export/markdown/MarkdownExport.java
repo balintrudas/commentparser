@@ -1,6 +1,6 @@
 package com.github.balintrudas.commentparser.export.markdown;
 
-import com.github.balintrudas.commentparser.CommentStore;
+import com.github.balintrudas.commentparser.scanner.CommentStore;
 import com.github.balintrudas.commentparser.configuration.ExportConfiguration;
 import com.github.balintrudas.commentparser.export.Exporter;
 import com.github.balintrudas.commentparser.marker.MarkerElement;

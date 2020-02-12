@@ -4,7 +4,7 @@ import com.coreoz.windmill.Windmill;
 import com.coreoz.windmill.exports.config.ExportHeaderMapping;
 import com.coreoz.windmill.exports.config.ExportRowsConfig;
 import com.coreoz.windmill.exports.exporters.csv.ExportCsvConfig;
-import com.github.balintrudas.commentparser.CommentStore;
+import com.github.balintrudas.commentparser.scanner.CommentStore;
 import com.github.balintrudas.commentparser.configuration.ExportConfiguration;
 import com.github.balintrudas.commentparser.export.ExportType;
 import com.github.balintrudas.commentparser.export.Exporter;

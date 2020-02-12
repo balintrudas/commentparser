@@ -1,6 +1,6 @@
 package com.github.balintrudas.commentparser.export;
 
-import com.github.balintrudas.commentparser.CommentStore;
+import com.github.balintrudas.commentparser.scanner.CommentStore;
 import com.github.balintrudas.commentparser.configuration.ExportConfiguration;
 
 import java.io.IOException;

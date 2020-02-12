@@ -1,4 +1,4 @@
-package com.github.balintrudas.commentparser;
+package com.github.balintrudas.commentparser.scanner;
 
 import com.github.balintrudas.commentparser.marker.CommentElement;
 import lombok.Getter;
