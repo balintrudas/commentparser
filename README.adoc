@@ -8,7 +8,7 @@ Comment Parser is a Java library that can be used to extract comments from a sou
 It can also be used to grouping comments together and the results can be exported to various formats.
 Comment Parser plugin also available for IntelliJ.
 
-https://plugins.jetbrains.com/plugin/
+https://plugins.jetbrains.com/plugin/13807-comment-parser
 
 image::https://user-images.githubusercontent.com/22676978/73601514-564a2500-4563-11ea-8c7a-fbe3dcf83bd4.png[Comment Parser]
 
